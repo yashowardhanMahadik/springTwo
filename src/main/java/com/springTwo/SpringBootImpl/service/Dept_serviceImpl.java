@@ -1,11 +1,13 @@
 package com.springTwo.SpringBootImpl.service;
 
 import com.springTwo.SpringBootImpl.entity.Department;
+import com.springTwo.SpringBootImpl.exceptions.DepartmentNotFoundException;
 import com.springTwo.SpringBootImpl.repository.Dept_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Dept_serviceImpl implements Dept_service{
@@ -42,5 +44,19 @@ public class Dept_serviceImpl implements Dept_service{
         }
 //        d.setDeptAddress(department.getDeptAddress());
         return dept_repository.save(d);
+    }
+
+    @Override
+    public Department getDeptByName(String name) {
+        return dept_repository.findByDeptNameIgnoreCase(name);
+    }
+
+    @Override
+    public Department getDeptById(Long id) throws DepartmentNotFoundException {
+        Optional<Department> dOpt = dept_repository.findById(id);
+        if(!dOpt.isPresent()){
+            throw new DepartmentNotFoundException("Department not found ");
+        }
+        return dOpt.get();
     }
 }
